@@ -1,0 +1,12 @@
+# Node
+node_modules/
+build/
+dist/
+
+# PHP
+vendor/
+.env
+
+# Solidity
+build/
+artifacts/
