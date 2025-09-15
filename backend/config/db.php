@@ -1,12 +1,18 @@
 <?php
-$host = "localhost";
-$user = "root";
-$password = "";
-$dbname = "digital_voting";
+$host = 'localhost';
+$db   = 'voting_system';
+$user = 'root';
+$pass = '';
+$charset = 'utf8mb4';
 
-$conn = new mysqli($host, $user, $password, $dbname);
+$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
 
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+try {
+    $pdo = new PDO($dsn, $user, $pass, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    ]);
+} catch (PDOException $e) {
+    die("Database connection failed: " . $e->getMessage());
 }
 ?>
