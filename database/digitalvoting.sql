@@ -1,4 +1,3 @@
--- Digital Voting System Database Schema (Refined)
 
 CREATE DATABASE IF NOT EXISTS digital_voting;
 USE digital_voting;
