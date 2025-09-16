@@ -8,8 +8,6 @@ CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     voter_id VARCHAR(50) UNIQUE NOT NULL,   -- unique ID for login
     fullname VARCHAR(100) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
     role ENUM('voter', 'admin') DEFAULT 'voter',
     has_voted BOOLEAN DEFAULT FALSE,
     account_session VARCHAR(255),          -- session tracking (token, cookie, etc.)
