@@ -9,6 +9,15 @@ function go($sql) {
     return $pdo->prepare($sql);
 }
 
+function custom_echo($x, $length){
+  if(strlen($x)<=$length){
+    echo $x;
+  }else{
+    $y=substr($x,0,$length) . '***';
+    echo $y;
+  }
+}
+
 function loggedin() {
     return isset($_SESSION["user_id"]);
 }
