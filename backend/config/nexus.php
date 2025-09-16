@@ -2,38 +2,11 @@
 error_reporting(E_ALL);
 session_start();
 
-
-class Account {
-    private $pdo;
-
-    public function __construct() {
-        $this->pdo = $this->connectAccount();
-    }
-
-    private function connectAccount() {
-        $servername = "localhost";
-        $username   = "root";
-        $password   = "";
-        $dbname     = "irev2.0";
-
-        try { 
-            $connect = new PDO("mysql:host=$servername;dbname=$dbname;charset=utf8mb4", $username, $password);
-            $connect->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            return $connect;
-        } catch(PDOException $e) {
-            die("Database Connection Failed: " . $e->getMessage());
-        }
-    }
-
-    public function getPDO() {
-        return $this->pdo;
-    }
-}
+require_once __DIR__ . '/db.php';
 
 function go($sql) {
-    $account = new Account();
-    $stmt = $account->getPDO()->prepare($sql);
-    return $stmt;
+    global $pdo;
+    return $pdo->prepare($sql);
 }
 
 function loggedin() {
@@ -51,16 +24,13 @@ function logoutUser() {
 }
 
 function loginUser($v_id, $name) {
-    $account = new Account();
-    $pdo = $account->getPDO();
-
+    global $pdo;
     $sql = "SELECT * FROM rev_users WHERE v_id = ? AND name = ?";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$v_id, $name]);
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    $user = $stmt->fetch();
 
     if ($user) {
-        // Store the entire user record in session
         $_SESSION['user'] = $user;
         return true;
     }
