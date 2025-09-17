@@ -20,7 +20,7 @@ $federal_candidates = [
         ['name'=>'Candidate B','party'=>'Party YDC'],
         ['name'=>'Candidate C','party'=>'Party AZZ']
     ],
-    'house' => [
+    'reps' => [
         ['name'=>'Candidate A','party'=>'Party TXT'],
         ['name'=>'Candidate B','party'=>'Party FDT'],
         ['name'=>'Candidate C','party'=>'Party ZDP']
@@ -65,7 +65,7 @@ function logoutUser() {
 
 function loginUser($v_id, $name) {
     global $pdo;
-    $sql = "SELECT * FROM rev_users WHERE voter_id = ? AND fullname = ?";
+    $sql = "SELECT * FROM users WHERE voter_id = ? AND fullname = ?";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$v_id, $name]);
     $user = $stmt->fetch();
@@ -119,24 +119,23 @@ function aside(){
       <i data-feather="file-text" class="mr-3"></i> Elections
     </a>
 
+    <!--<a href="#" class="flex items-center p-2 rounded-lg text-gray-700 dark:text-gray-200 -->
+    <!--  hover:bg-green-100 hover:text-green-700 -->
+    <!--  dark:hover:bg-yellow-600 dark:hover:text-yellow-200 no-underline transition">-->
+    <!--  <i data-feather="users" class="mr-3"></i> Voter Records-->
+    <!--</a>-->
 
-    <a href="#" class="flex items-center p-2 rounded-lg text-gray-700 dark:text-gray-200 
-      hover:bg-green-100 hover:text-green-700 
-      dark:hover:bg-yellow-600 dark:hover:text-yellow-200 no-underline transition">
-      <i data-feather="users" class="mr-3"></i> Voter Records
-    </a>
+    <!--<a href="#" class="flex items-center p-2 rounded-lg text-gray-700 dark:text-gray-200 -->
+    <!--  hover:bg-green-100 hover:text-green-700 -->
+    <!--  dark:hover:bg-yellow-600 dark:hover:text-yellow-200 no-underline transition">-->
+    <!--  <i data-feather="activity" class="mr-3"></i> Results-->
+    <!--</a>-->
 
-    <a href="#" class="flex items-center p-2 rounded-lg text-gray-700 dark:text-gray-200 
-      hover:bg-green-100 hover:text-green-700 
-      dark:hover:bg-yellow-600 dark:hover:text-yellow-200 no-underline transition">
-      <i data-feather="activity" class="mr-3"></i> Results
-    </a>
-
-    <a href="#" class="flex items-center p-2 rounded-lg text-gray-700 dark:text-gray-200 
-      hover:bg-green-100 hover:text-green-700 
-      dark:hover:bg-yellow-600 dark:hover:text-yellow-200 no-underline transition">
-      <i data-feather="settings" class="mr-3"></i> Settings
-    </a>
+    <!--<a href="#" class="flex items-center p-2 rounded-lg text-gray-700 dark:text-gray-200 -->
+    <!--  hover:bg-green-100 hover:text-green-700 -->
+    <!--  dark:hover:bg-yellow-600 dark:hover:text-yellow-200 no-underline transition">-->
+    <!--  <i data-feather="settings" class="mr-3"></i> Settings-->
+    <!--</a>-->
   </nav>
 
   <div class="p-4 border-t border-gray-200 dark:border-gray-700">
