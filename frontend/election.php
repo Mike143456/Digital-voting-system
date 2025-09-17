@@ -28,7 +28,6 @@ $user = $_SESSION['user'];
 </head>
 <body class="bg-gray-100 dark:bg-gray-900">
 
-  <!-- Mobile Navbar -->
   <div class="md:hidden flex items-center justify-between bg-white dark:bg-gray-800 px-4 py-3 shadow">
     <h1 class="text-lg font-bold text-gray-800 dark:text-white">
       Election Experience <span class="text-sm mb-1 text-black/80 dark:text-white/80">2.1</span>
@@ -43,23 +42,18 @@ $user = $_SESSION['user'];
 
     <main class="flex-1 p-6 max-w-5xl mx-auto space-y-6">
 
-  <!-- Election Header & Breadcrumb 2.0 -->
 <div class="space-y-4">
 
-  <!-- Animated Header -->
   <h1 class="text-4xl md:text-5xl font-extrabold text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-cyan-400 dark:from-indigo-400 dark:to-purple-400 animate-pulse">
     DEMO Election
   </h1>
 
-  <!-- Breadcrumb -->
   <div id="breadcrumb" class="flex justify-center md:justify-between text-sm md:text-base px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 shadow-md border border-gray-200 dark:border-gray-700">
     
-    <!-- Federal Step -->
     <span id="step-federal-breadcrumb" class="font-semibold text-blue-600 dark:text-cyan-400 px-3 py-1 rounded-lg transition-colors duration-300">
       Federal: President
     </span>
 
-    <!-- State Step -->
     <span id="step-state-breadcrumb" class="font-semibold text-gray-500 dark:text-gray-400 px-3 py-1 rounded-lg transition-colors duration-300">
       State: Governor
     </span>
@@ -68,51 +62,38 @@ $user = $_SESSION['user'];
 
 </div>
 
-<!-- Step Selection 2.0 -->
 <div id="step-select-election" class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
 
-  <!-- Federal Election Card -->
   <button onclick="startElection('federal')" 
           class="group relative flex flex-col items-center justify-center p-6 rounded-2xl shadow-lg bg-gradient-to-r from-blue-500 to-cyan-500 hover:scale-105 hover:shadow-2xl transition-transform duration-300 text-white font-semibold overflow-hidden">
     
-    <!-- Decorative Icons / Glow -->
     <div class="absolute -top-6 -right-6 w-24 h-24 bg-white/10 rounded-full animate-pulse"></div>
     <div class="absolute -bottom-6 -left-6 w-24 h-24 bg-white/10 rounded-full animate-pulse delay-150"></div>
 
-    <!-- Icon -->
     <i data-feather="users" class="w-10 h-10 mb-4"></i>
 
-    <!-- Title & Description -->
     <h3 class="text-xl font-bold mb-1 text-center">Federal Election</h3>
     <p class="text-sm text-white/90 text-center">Vote for President, Senate & House of Representatives.</p>
 
-    <!-- Hover overlay effect -->
     <span class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl"></span>
   </button>
 
-  <!-- State Election Card -->
   <button onclick="startElection('state')" 
           class="group relative flex flex-col items-center justify-center p-6 rounded-2xl shadow-lg bg-gradient-to-r from-indigo-500 to-purple-500 hover:scale-105 hover:shadow-2xl transition-transform duration-300 text-white font-semibold overflow-hidden">
     
-    <!-- Decorative Icons / Glow -->
     <div class="absolute -top-6 -right-6 w-24 h-24 bg-white/10 rounded-full animate-pulse"></div>
     <div class="absolute -bottom-6 -left-6 w-24 h-24 bg-white/10 rounded-full animate-pulse delay-150"></div>
 
-    <!-- Icon -->
     <i data-feather="map" class="w-10 h-10 mb-4"></i>
 
-    <!-- Title & Description -->
     <h3 class="text-xl font-bold mb-1 text-center">State Election</h3>
     <p class="text-sm text-white/90 text-center">Vote for Governor & State Assembly representatives.</p>
 
-    <!-- Hover overlay effect -->
     <span class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl"></span>
   </button>
 
 </div>
 
-
-    <!-- Federal Steps -->
     <div id="federal-steps" class="space-y-6 hidden">
     <?php 
     $federal_order = ['president','senate','reps'];
@@ -164,7 +145,6 @@ $user = $_SESSION['user'];
     <?php endforeach; ?>
     </div>
 
-    <!-- State Steps -->
     <div id="state-steps" class="space-y-6 hidden">
     <?php 
     $state_order = ['governor','assembly'];
@@ -216,21 +196,26 @@ $user = $_SESSION['user'];
     <?php endforeach; ?>
     </div>
 
-     <!-- Confirmation Modal -->
     <div id="confirm-modal" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 opacity-0 pointer-events-none transition-opacity duration-300">
       <div class="bg-gray-100 dark:bg-gray-800 p-6 rounded-3xl shadow-2xl max-w-sm w-full text-center transform scale-95 transition-transform duration-300">
         <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Confirm Your Choice</h3>
         <p class="text-gray-700 dark:text-gray-300 mb-4">Are you sure you want to VOTE this candidate? You won't be able to change it later.</p>
         
-        <!-- Candidate Preview -->
         <div id="confirm-candidate" class="mb-6 flex flex-col items-center gap-2 opacity-0 transition-opacity duration-300">
-          <!-- dynamically filled -->
         </div>
         
         <div class="flex justify-around gap-4">
           <button id="confirm-yes" class="py-2 px-4 bg-green-500 hover:bg-green-600 text-white rounded-xl font-semibold">Yes, Lock</button>
           <button id="confirm-no" class="py-2 px-4 bg-red-500 hover:bg-red-600 text-white rounded-xl font-semibold">Cancel</button>
         </div>
+      </div>
+    </div>
+
+    <div id="completion-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center hidden z-50">
+      <div class="bg-gray-100 dark:bg-gray-800 p-6 rounded-2xl shadow-xl max-w-sm w-full text-center">
+        <h3 id="completion-title" class="text-lg font-bold text-gray-900 dark:text-white mb-2"></h3>
+        <p id="completion-msg" class="text-gray-700 dark:text-gray-300 mb-4"></p>
+        <button id="completion-ok" class="py-2 px-4 bg-green-500 hover:bg-green-600 text-white rounded-xl font-semibold">Submit</button>
       </div>
     </div>
 
@@ -261,61 +246,102 @@ function startElection(type){
 }
 
 let pendingAction = null;
-
 function nextFederalStep(nextStep, currentStep){
     const currentDiv = document.getElementById('federal-' + currentStep);
     const selected = currentDiv.querySelector('.candidate-btn.bg-green-200, .candidate-btn.dark\\:bg-green-900\\/30');
-    if(!selected){ alert("Please select a candidate before proceeding."); return; }
-    pendingAction = ()=>{ currentDiv.classList.add('hidden'); document.getElementById('federal-'+nextStep).classList.remove('hidden'); updateBreadcrumb('federal',nextStep);}
+    if(!selected){ 
+        showToast("Please select a candidate before proceeding."); 
+        return; 
+    }
+    pendingAction = ()=>{
+        currentDiv.classList.add('hidden'); 
+        document.getElementById('federal-'+nextStep).classList.remove('hidden'); 
+        updateBreadcrumb('federal', nextStep);
+        showToast(`You voted for ${selected.querySelector('p.font-semibold').innerText}`);
+    }
     showConfirmationModal(selected);
 }
 
 function finishFederal(currentStep){
     const currentDiv = document.getElementById('federal-' + currentStep);
     const selected = currentDiv.querySelector('.candidate-btn.bg-green-200, .candidate-btn.dark\\:bg-green-900\\/30');
-    if(!selected){ alert("Please select a candidate before finishing."); return; }
-    pendingAction = ()=>{ alert("Federal Election Completed!"); location.reload(); }
+    if(!selected){ 
+        showToast("Please select a candidate before finishing."); 
+        return; 
+    }
+    pendingAction = ()=>{
+        showCompletionModal("Federal Election Completed!", `You successfully voted for ${selected.querySelector('p.font-semibold').innerText}`);
+    }
     showConfirmationModal(selected);
 }
 
 function nextStateStep(nextStep, currentStep){
     const currentDiv = document.getElementById('state-' + currentStep);
     const selected = currentDiv.querySelector('.candidate-btn.bg-green-200, .candidate-btn.dark\\:bg-green-900\\/30');
-    if(!selected){ alert("Please select a candidate before proceeding."); return; }
-    pendingAction = ()=>{ currentDiv.classList.add('hidden'); document.getElementById('state-'+nextStep).classList.remove('hidden'); updateBreadcrumb('state',nextStep);}
+    if(!selected){ 
+        showToast("Please select a candidate before proceeding."); 
+        return; 
+    }
+    pendingAction = ()=>{
+        currentDiv.classList.add('hidden'); 
+        document.getElementById('state-'+nextStep).classList.remove('hidden'); 
+        updateBreadcrumb('state', nextStep);
+        showToast(`You voted for ${selected.querySelector('p.font-semibold').innerText}`);
+    }
     showConfirmationModal(selected);
 }
 
 function finishState(currentStep){
     const currentDiv = document.getElementById('state-' + currentStep);
     const selected = currentDiv.querySelector('.candidate-btn.bg-green-200, .candidate-btn.dark\\:bg-green-900\\/30');
-    if(!selected){ alert("Please select a candidate before finishing."); return; }
-    pendingAction = ()=>{ alert("State Election Completed!"); location.reload(); }
+    if(!selected){ 
+        showToast("Please select a candidate before finishing."); 
+        return; 
+    }
+    pendingAction = ()=>{
+        showCompletionModal("State Election Completed!", `You successfully voted for ${selected.querySelector('p.font-semibold').innerText}`);
+    }
     showConfirmationModal(selected);
 }
+
+function showToast(msg){
+    let toast = document.createElement('div');
+    toast.className = "fixed bottom-6 right-6 bg-green-500 text-white px-4 py-3 rounded-xl shadow-lg animate-slideIn";
+    toast.innerText = msg;
+    document.body.appendChild(toast);
+    setTimeout(()=>{ toast.classList.add("opacity-0"); setTimeout(()=>toast.remove(),300); }, 2500);
+}
+
+function showCompletionModal(title, message){
+    const modal = document.getElementById('completion-modal');
+    modal.querySelector('#completion-title').innerText = title;
+    modal.querySelector('#completion-msg').innerText = message;
+    modal.classList.remove('hidden');
+}
+
+document.getElementById('completion-ok').addEventListener('click', ()=>{
+    document.getElementById('completion-modal').classList.add('hidden');
+    location.reload();
+});
+
 
 function showConfirmationModal(selectedBtn){
     const modal = document.getElementById('confirm-modal');
     const candidatePanel = modal.querySelector('#confirm-candidate');
     
-    // Get candidate info
     const name = selectedBtn.querySelector('p.font-semibold').innerText;
     const party = selectedBtn.querySelector('p.text-sm').innerText;
 
-    // Update modal content
     candidatePanel.innerHTML = `
         <div class="w-24 h-24 bg-gray-300 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-500 mb-2">Img</div>
         <p class="font-semibold text-gray-900 dark:text-white">${name}</p>
         <p class="text-sm text-gray-600 dark:text-gray-300">${party}</p>
     `;
 
-    // Animate modal
     modal.classList.remove('opacity-0', 'pointer-events-none');
     setTimeout(()=>{ candidatePanel.classList.add('opacity-100'); }, 50);
 }
 
-
-// Hide modal
 document.getElementById('confirm-no').addEventListener('click', ()=>{
     const modal = document.getElementById('confirm-modal');
     const candidatePanel = modal.querySelector('#confirm-candidate');
@@ -339,22 +365,18 @@ document.getElementById('confirm-yes').addEventListener('click', ()=>{
 function selectCandidate(btn) {
     const parent = btn.closest('.step');
 
-    // Remove previous selections
     parent.querySelectorAll('.candidate-btn').forEach(b => {
         b.classList.remove(
             'border-cyan-500', 'dark:border-cyan-400',
             'border-indigo-500', 'dark:border-indigo-400',
             'bg-green-200', 'dark:bg-green-900/30'
         );
-        // Remove existing vote icon if any
         const existingIcon = b.querySelector('.vote-icon');
         if (existingIcon) existingIcon.remove();
     });
 
-    // Highlight current selection
     btn.classList.add('bg-green-200', 'dark:bg-green-900/30');
 
-    // Add vote icon
     const icon = document.createElement('span');
     icon.className = `
         vote-icon absolute right-4 top-1/2 -translate-y-1/2 
@@ -370,10 +392,8 @@ function selectCandidate(btn) {
     btn.style.position = 'relative';
     btn.appendChild(icon);
 
-    // Animate the tick
     setTimeout(() => icon.classList.add('scale-100'), 50);
 
-    // Update candidate panel
     const name = btn.querySelector('p.font-semibold').innerText;
     const party = btn.querySelector('p.text-sm').innerText;
     const panel = parent.querySelector('[id^="selected-candidate"]');
