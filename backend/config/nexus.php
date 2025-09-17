@@ -9,6 +9,37 @@ function go($sql) {
     return $pdo->prepare($sql);
 }
 
+$federal_candidates = [
+    'president' => [
+        ['name'=>'Candidate A','party'=>'Party XPP'],
+        ['name'=>'Candidate B','party'=>'Party YPY'],
+        ['name'=>'Candidate C','party'=>'Party ZDP']
+    ],
+    'senate' => [
+        ['name'=>'Candidate A','party'=>'Party GNPP'],
+        ['name'=>'Candidate B','party'=>'Party YDC'],
+        ['name'=>'Candidate C','party'=>'Party AZZ']
+    ],
+    'house' => [
+        ['name'=>'Candidate A','party'=>'Party TXT'],
+        ['name'=>'Candidate B','party'=>'Party FDT'],
+        ['name'=>'Candidate C','party'=>'Party ZDP']
+    ]
+];
+
+$state_candidates = [
+    'governor' => [
+        ['name'=>'Candidate A','party'=>'Party MWK'],
+        ['name'=>'Candidate B','party'=>'Party NNPP'],
+        ['name'=>'Candidate C','party'=>'Party ONDP']
+    ],
+    'assembly' => [
+        ['name'=>'Candidate A','party'=>'Party LP'],
+        ['name'=>'Candidate B','party'=>'Party NNPP'],
+        ['name'=>'Candidate C','party'=>'Party ONDP']
+    ]
+];
+
 function custom_echo($x, $length){
   if(strlen($x)<=$length){
     echo $x;
@@ -34,7 +65,7 @@ function logoutUser() {
 
 function loginUser($v_id, $name) {
     global $pdo;
-    $sql = "SELECT * FROM rev_users WHERE v_id = ? AND name = ?";
+    $sql = "SELECT * FROM rev_users WHERE voter_id = ? AND fullname = ?";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$v_id, $name]);
     $user = $stmt->fetch();
@@ -76,11 +107,18 @@ function aside(){
   </div>
 
   <nav class="flex-1 px-4 py-6 space-y-2">
-    <a href="#" class="flex items-center p-2 rounded-lg text-gray-700 dark:text-gray-200 
+    <a href="dashboard.php" class="flex items-center p-2 rounded-lg text-gray-700 dark:text-gray-200 
       hover:bg-green-100 hover:text-green-700 
       dark:hover:bg-yellow-600 dark:hover:text-yellow-200 no-underline transition">
       <i data-feather="home" class="mr-3"></i> Dashboard
     </a>
+
+    <a href="election.php" class="flex items-center p-2 rounded-lg text-gray-700 dark:text-gray-200 
+      hover:bg-green-100 hover:text-green-700 
+      dark:hover:bg-yellow-600 dark:hover:text-yellow-200 no-underline transition">
+      <i data-feather="file-text" class="mr-3"></i> Elections
+    </a>
+
 
     <a href="#" class="flex items-center p-2 rounded-lg text-gray-700 dark:text-gray-200 
       hover:bg-green-100 hover:text-green-700 
