@@ -6,6 +6,7 @@ import { LoginData } from "./types/formTypes";
 import { useRouter } from "next/navigation";
 import AlertModal from "../utils/alertModal";
 import Loader from "../utils/loader";
+import {generateKeyPair, signData, verifySignature,  storeKeyInLocalStorage} from "./_web";
 
 export default function LoginForm() {
   const {
@@ -27,10 +28,21 @@ export default function LoginForm() {
       setSignupError("Erorr signing up");
       setErrorModal(true);
     };
+    
     console.log(data);
+    generateKeyPair().then((keyPair) => {
+    const dataToSign = "Voting";
+    signData(keyPair.privateKey, dataToSign).then((signature) => {
+    verifySignature(keyPair.publicKey, signature, dataToSign).then((isValid) => {
+      console.log("Signature valid:", keyPair.privateKey);
+        storeKeyInLocalStorage(keyPair);
+    });
+  });
+});
     setSuccessModal(true);
+    
     setTimeout(() => {
-      router.push("/dashboard");
+      //router.push("/dashboard");
     }, 3000);
   };
 
