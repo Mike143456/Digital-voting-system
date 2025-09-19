@@ -2,7 +2,8 @@
 pragma solidity ^0.8.13;
 
 contract DigitalVoting {
-    uint public counter;
+    uint public pollCounter;
+    uint public contestantCounter;
 
    struct PollStruct {
     uint id;
@@ -23,14 +24,17 @@ contract DigitalVoting {
     uint id;
     string name;
     string image;
+    string partyName;
     uint votes;
    }
 
    mapping (uint => bool) pollExists;
+   mapping (uint => bool) contestantExists;
    mapping (uint => PollStruct) polls;
    mapping (uint => mapping (address => bool)) hasVoted;
    mapping (uint => mapping (address => bool)) hasContested;
-   mapping (uint => ContestantStruct) contestants;
+   mapping (uint => mapping (uint => ContestantStruct)) contestants;
+   mapping(uint => uint) public contestantCount;
 
    modifier onlyCreator(uint pollId) {
     require(msg.sender == polls[pollId].creator, "Unauthorised call!");
@@ -38,7 +42,8 @@ contract DigitalVoting {
    }
 
    event HasVoted(address indexed voter, uint timeStamp);
-   event PollCreated(string title, address indexed creator, uint indexed id, uint timestamp);
+   event PollCreated(string title, address indexed creator, uint indexed PollId, uint timestamp);
+   event ContestantAdded(string name, address indexed admin, uint indexed contestandId, uint timestamp);
    event PollUpdated(address indexed admin, uint pollId);
    event PollDeleted(address indexed admin, uint pollId);
 
@@ -49,13 +54,13 @@ contract DigitalVoting {
     uint startTime,
     uint endTime
    ) public {
-    counter++;
+    pollCounter++;
 
     require(bytes(_title).length > 3, "Please provide a valid poll title");
     require(startTime > 0, "Please insert a valid time for the commencement of the poll");
     require(endTime > startTime, "Please put a valid time to end the poll");
 
-    PollStruct storage newPoll = polls[counter];
+    PollStruct storage newPoll = polls[pollCounter];
     newPoll.title = _title;
     newPoll.desc = _desc;
     newPoll.image = _image;
@@ -67,9 +72,9 @@ contract DigitalVoting {
     newPoll.creator = msg.sender;
     newPoll.timeForCreatingPoll = block.timestamp;
 
-    pollExists[counter] = true;   
+    pollExists[pollCounter] = true;   
 
-    emit PollCreated(_title, msg.sender, counter, block.timestamp);                                                                                 
+    emit PollCreated(_title, msg.sender, pollCounter, block.timestamp);                                                                                 
    }
 
    function updatePoll(
@@ -102,5 +107,45 @@ contract DigitalVoting {
         polls[pollId].deleted = true ;
 
         emit PollDeleted(msg.sender, pollId);
+    }
+
+    //For managing contestants and actual votes
+    function addContestant(
+        uint pollId, 
+        string memory _name, 
+        string memory _image, 
+        string memory _partyName) public onlyCreator(pollId) {
+            require(!contestantExists[pollId], "Contestant already exist for this poll");
+
+            contestantCount[pollId]++;
+            uint contestantId = contestantCount[pollId];
+
+            ContestantStruct storage newContestant = contestants[pollId][contestantId];
+
+            newContestant.name = _name;
+            newContestant.image = _image;
+            newContestant.partyName = _partyName;
+
+            contestantExists[pollId] = true;
+            polls[pollId].contestants++;
+
+            emit ContestantAdded(_name, msg.sender, contestantCounter, block.timestamp);
+    }
+
+    function vote(uint pollId, uint contestantId) public {
+        require(pollExists[pollId], "Poll does not exist");
+        require(block.timestamp >= polls[pollId].startsAt, "Poll has not started");
+        require(block.timestamp < polls[pollId].endsAt, "Poll already ended");
+        require(!hasVoted[pollId][msg.sender], "Already voted!!!");
+
+        //checkinf if contestants exist in a particular poll
+        require(contestantId > 0 && contestantId <= polls[pollId].contestants, "Invalid contestants");
+
+        contestants[pollId][contestantId].votes++;
+        hasVoted[pollId][msg.sender] = true;
+
+        polls[pollId].voteCount++;
+
+        emit HasVoted(msg.sender, block.timestamp);
     }
 }
