@@ -37,26 +37,26 @@ export default function LoginForm() {
   }, [controls]);
 
   const onSubmit = async (data: LoginData) => {
-    if (error) {
-      setSignupError("Erorr signing up");
-      setErrorModal(true);
-    };
+//     if (error) {
+//       setSignupError("Erorr signing up");
+//       setErrorModal(true);
+//     };
     
     console.log(data);
-    generateKeyPair().then((keyPair) => {
-    const dataToSign = "Voting";
-    signData(keyPair.privateKey, dataToSign).then((signature) => {
-    verifySignature(keyPair.publicKey, signature, dataToSign).then((isValid) => {
-      console.log("Signature valid:", keyPair.privateKey);
-        storeKeyInLocalStorage(keyPair);
-    });
-  });
-});
-    setSuccessModal(true);
+//     generateKeyPair().then((keyPair) => {
+//     const dataToSign = "Voting";
+//     signData(keyPair.privateKey, dataToSign).then((signature) => {
+//     verifySignature(keyPair.publicKey, signature, dataToSign).then((isValid) => {
+//       console.log("Signature valid:", keyPair.privateKey);
+//         storeKeyInLocalStorage(keyPair);
+//     });
+//   });
+// });
+    // setSuccessModal(true);
     
-    setTimeout(() => {
-      //router.push("/dashboard");
-    }, 3000);
+    // setTimeout(() => {
+      router.push("/dashboard");
+    // }, 3000);
   };
 
   return (
@@ -66,11 +66,9 @@ export default function LoginForm() {
         animate={controls}
         className="absolute inset-0 bg-[radial-gradient(circle,_white_1px,_transparent_1px)] [background-size:18px_18px] opacity-15"
       />
-
     
       <div className="absolute top-0 left-0 w-1/2 h-1/2 bg-gradient-to-br from-yellow-300 via-orange-400 to-transparent opacity-60 blur-3xl" />
 
-     
       <motion.div
         initial={{ opacity: 1, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -85,7 +83,7 @@ export default function LoginForm() {
           <p className="text-gray-300 text-sm">Please Enter Your Details To Continue</p>
         </div>
 
-        <form className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
           <input
             type="text"
             placeholder="Enter Your Voter's ID(Voter's ID)"
