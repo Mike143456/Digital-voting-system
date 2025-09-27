@@ -1,151 +1,215 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
 contract DigitalVoting {
-    uint public pollCounter;
-    uint public contestantCounter;
-
-   struct PollStruct {
-    uint id;
-    string title;
-    string desc;
-    string image;
-    uint voteCount;
-    uint contestants;
-    bool deleted;
-    uint startsAt;
-    uint endsAt;
-    address creator;
-    uint timeForCreatingPoll;
-    address[] voters;
-   }
-
-   struct ContestantStruct {
-    uint id;
-    string name;
-    string image;
-    string partyName;
-    uint votes;
-   }
-
-   mapping (uint => bool) pollExists;
-   mapping (uint => bool) contestantExists;
-   mapping (uint => PollStruct) polls;
-   mapping (uint => mapping (address => bool)) hasVoted;
-   mapping (uint => mapping (address => bool)) hasContested;
-   mapping (uint => mapping (uint => ContestantStruct)) contestants;
-   mapping(uint => uint) public contestantCount;
-
-   modifier onlyCreator(uint pollId) {
-    require(msg.sender == polls[pollId].creator, "Unauthorised call!");
-    _;
-   }
-
-   event HasVoted(address indexed voter, uint timeStamp);
-   event PollCreated(string title, address indexed creator, uint indexed PollId, uint timestamp);
-   event ContestantAdded(string name, address indexed admin, uint indexed contestandId, uint timestamp);
-   event PollUpdated(address indexed admin, uint pollId);
-   event PollDeleted(address indexed admin, uint pollId);
-
-   function createPoll(
-    string memory _title,
-    string memory _image,
-    string memory _desc,
-    uint startTime,
-    uint endTime
-   ) public {
-    pollCounter++;
-
-    require(bytes(_title).length > 3, "Please provide a valid poll title");
-    require(startTime > 0, "Please insert a valid time for the commencement of the poll");
-    require(endTime > startTime, "Please put a valid time to end the poll");
-
-    PollStruct storage newPoll = polls[pollCounter];
-    newPoll.title = _title;
-    newPoll.desc = _desc;
-    newPoll.image = _image;
-    newPoll.voteCount = 0;
-    newPoll.contestants = 0;
-    newPoll.deleted = false;
-    newPoll.startsAt = startTime;
-    newPoll.endsAt = endTime;
-    newPoll.creator = msg.sender;
-    newPoll.timeForCreatingPoll = block.timestamp;
-
-    pollExists[pollCounter] = true;   
-
-    emit PollCreated(_title, msg.sender, pollCounter, block.timestamp);                                                                                 
-   }
-
-   function updatePoll(
-    uint pollId, 
-    string memory _title, 
-    string memory _image, 
-    string memory _desc
-) onlyCreator(pollId) public {
-        require(bytes(_title).length > 3, "Please provide a valid title");
-        require(!polls[pollId].deleted, "The poll you wish to update does not exist or has been deleted.");
-        //cannot update if votes exist
-        require(polls[pollId].voteCount == 0, "Poll has valid votes and cannot be updated");
-        //cannot update if vote has ended
-        require(block.timestamp < polls[pollId].endsAt, "This Poll already ended, cannot update.");
-
-            polls[pollId].title = _title;
-            polls[pollId].image = _image;
-            polls[pollId].desc = _desc;
-
-            emit PollUpdated(msg.sender, pollId);
+    // Define a struct for a Poll
+    struct PollStruct {
+        uint id;
+        string title;
+        string desc;
+        string image;
+        uint voteCount;
+        uint contestants;
+        bool deleted;
+        uint startsAt;
+        uint endsAt;
+        address creator;
+        uint timeForCreatingPoll;
+        address[] voters;
     }
 
-    function deletePoll(uint pollId) public {
-        require(!polls[pollId].deleted, "Poll does not exist or already deleted.");
-        //cannot delete if votes exist
-        require(polls[pollId].voteCount == 0, "Poll has valid votes, cannot be deleted");
-        //cannot delete if vote has ended
-        require(block.timestamp < polls[pollId].endsAt, "Poll already ended, cannot be deleted");
-
-        polls[pollId].deleted = true ;
-
-        emit PollDeleted(msg.sender, pollId);
+    // Defines a struct for a Contestant
+    struct ContestantStruct {
+        uint id;
+        string name;
+        string desc;
+        string image;
+        string partyName;
+        uint votes;
     }
 
-    //For managing contestants and actual votes
+    // State variables
+    PollStruct[] public polls;
+    mapping(uint => ContestantStruct[]) public pollToContestant;
+    mapping(uint => mapping(address => bool)) private voterHasVoted;
+
+    // Events
+    event PollCreated(
+        uint indexed id,
+        string title,
+        address indexed creator
+    );
+    event ContestantAdded(
+        uint indexed pollId,
+        uint indexed contestantId,
+        string name
+    );
+    event Voted(
+        uint indexed pollId,
+        uint indexed contestantId,
+        address voter
+    );
+    event PollUpdated(uint indexed pollId);
+
+    // Modifiers
+    modifier onlyCreator(uint _pollId) {
+        require(
+            polls[_pollId - 1].creator == msg.sender,
+            "Only the poll creator can perform this action"
+        );
+        _;
+    }
+
+    // Functions to create and manage polls
+    function createPoll(
+        string memory _title,
+        string memory _image,
+        string memory _desc,
+        uint _startsAt,
+        uint _endsAt
+    ) public {
+        require(bytes(_title).length > 0, "Title is required");
+        require(
+            _endsAt > _startsAt && _endsAt > block.timestamp,
+            "Invalid end time"
+        );
+
+        uint pollId = polls.length + 1;
+        polls.push(
+            PollStruct(
+                pollId,
+                _title,
+                _desc,
+                _image,
+                0,
+                0,
+                false,
+                _startsAt,
+                _endsAt,
+                msg.sender,
+                block.timestamp,
+                new address[](0)
+            )
+        );
+        emit PollCreated(pollId, _title, msg.sender);
+    }
+
+    function updatePoll(
+        uint _pollId,
+        string memory _title,
+        string memory _image,
+        string memory _desc
+    ) public onlyCreator(_pollId) {
+        require(
+            polls[_pollId - 1].startsAt > block.timestamp,
+            "Poll has already started and cannot be updated"
+        );
+        polls[_pollId - 1].title = _title;
+        polls[_pollId - 1].image = _image;
+        polls[_pollId - 1].desc = _desc;
+        emit PollUpdated(_pollId);
+    }
+
+    function deletePoll(uint _pollId) public onlyCreator(_pollId) {
+        polls[_pollId - 1].deleted = true;
+    }
+
+    // Functions to manage contestants
     function addContestant(
-        uint pollId, 
-        string memory _name, 
-        string memory _image, 
-        string memory _partyName) public onlyCreator(pollId) {
-            require(!contestantExists[pollId], "Contestant already exist for this poll");
+        uint _pollId,
+        string memory _name,
+        string memory _desc,
+        string memory _image,
+        string memory _partyName
+    ) public onlyCreator(_pollId) {
+        require(
+            polls[_pollId - 1].startsAt > block.timestamp,
+            "Poll has already started"
+        );
+        require(
+            !contestantExists(_pollId, _name, _partyName),
+            "Contestant already exists for this poll"
+        );
 
-            contestantCount[pollId]++;
-            uint contestantId = contestantCount[pollId];
-
-            ContestantStruct storage newContestant = contestants[pollId][contestantId];
-
-            newContestant.name = _name;
-            newContestant.image = _image;
-            newContestant.partyName = _partyName;
-
-            contestantExists[pollId] = true;
-            polls[pollId].contestants++;
-
-            emit ContestantAdded(_name, msg.sender, contestantCounter, block.timestamp);
+        uint contestantId = pollToContestant[_pollId].length + 1;
+        pollToContestant[_pollId].push(
+            ContestantStruct(
+                contestantId,
+                _name,
+                _desc,
+                _image,
+                _partyName,
+                0
+            )
+        );
+        polls[_pollId - 1].contestants++;
+        emit ContestantAdded(_pollId, contestantId, _name);
     }
 
-    function vote(uint pollId, uint contestantId) public {
-        require(pollExists[pollId], "Poll does not exist");
-        require(block.timestamp >= polls[pollId].startsAt, "Poll has not started");
-        require(block.timestamp < polls[pollId].endsAt, "Poll already ended");
-        require(!hasVoted[pollId][msg.sender], "Already voted!!!");
+    function contestantExists(
+        uint _pollId,
+        string memory _name,
+        string memory _partyName
+    ) internal view returns (bool) {
+        for (uint i = 0; i < pollToContestant[_pollId].length; i++) {
+            if (
+                keccak256(
+                    abi.encodePacked(pollToContestant[_pollId][i].name)
+                ) == keccak256(abi.encodePacked(_name)) &&
+                keccak256(
+                    abi.encodePacked(pollToContestant[_pollId][i].partyName)
+                ) == keccak256(abi.encodePacked(_partyName))
+            ) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-        //checkinf if contestants exist in a particular poll
-        require(contestantId > 0 && contestantId <= polls[pollId].contestants, "Invalid contestants");
+    // Function to handle voting
+    function vote(uint _pollId, uint _contestantId) public {
+        require(!voterHasVoted[_pollId][msg.sender], "Already voted!!!");
+        require(
+            block.timestamp > polls[_pollId - 1].startsAt,
+            "Voting has not started"
+        );
+        require(
+            block.timestamp < polls[_pollId - 1].endsAt,
+            "Voting has ended"
+        );
+        polls[_pollId - 1].voteCount++;
+        pollToContestant[_pollId][_contestantId - 1].votes++;
+        polls[_pollId - 1].voters.push(msg.sender);
+        voterHasVoted[_pollId][msg.sender] = true;
+        emit Voted(_pollId, _contestantId, msg.sender);
+    }
 
-        contestants[pollId][contestantId].votes++;
-        hasVoted[pollId][msg.sender] = true;
+    // View functions
+    function getAPoll(uint _pollId)
+        public
+        view
+        returns (PollStruct memory)
+    {
+        return polls[_pollId - 1];
+    }
 
-        polls[pollId].voteCount++;
+    function getAContestant(uint _pollId, uint _contestantId)
+        public
+        view
+        returns (ContestantStruct memory)
+    {
+        return pollToContestant[_pollId][_contestantId - 1];
+    }
 
-        emit HasVoted(msg.sender, block.timestamp);
+    function getAllPolls() public view returns (PollStruct[] memory) {
+        return polls;
+    }
+
+    function getAllContestants(uint _pollId)
+        public
+        view
+        returns (ContestantStruct[] memory)
+    {
+        return pollToContestant[_pollId];
     }
 }
