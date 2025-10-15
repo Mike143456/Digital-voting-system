@@ -1,0 +1,338 @@
+[
+    {
+      "type": "function",
+      "name": "addContestant",
+      "inputs": [
+        { "name": "_pollId", "type": "uint256", "internalType": "uint256" },
+        { "name": "_name", "type": "string", "internalType": "string" },
+        { "name": "_desc", "type": "string", "internalType": "string" },
+        { "name": "_image", "type": "string", "internalType": "string" },
+        { "name": "_partyName", "type": "string", "internalType": "string" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "createPoll",
+      "inputs": [
+        { "name": "_title", "type": "string", "internalType": "string" },
+        { "name": "_image", "type": "string", "internalType": "string" },
+        { "name": "_desc", "type": "string", "internalType": "string" },
+        { "name": "_startsAt", "type": "uint256", "internalType": "uint256" },
+        { "name": "_endsAt", "type": "uint256", "internalType": "uint256" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "deletePoll",
+      "inputs": [
+        { "name": "_pollId", "type": "uint256", "internalType": "uint256" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "getAContestant",
+      "inputs": [
+        { "name": "_pollId", "type": "uint256", "internalType": "uint256" },
+        {
+          "name": "_contestantId",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "tuple",
+          "internalType": "struct DigitalVoting.ContestantStruct",
+          "components": [
+            { "name": "id", "type": "uint256", "internalType": "uint256" },
+            { "name": "name", "type": "string", "internalType": "string" },
+            { "name": "desc", "type": "string", "internalType": "string" },
+            { "name": "image", "type": "string", "internalType": "string" },
+            { "name": "partyName", "type": "string", "internalType": "string" },
+            { "name": "votes", "type": "uint256", "internalType": "uint256" }
+          ]
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getAPoll",
+      "inputs": [
+        { "name": "_pollId", "type": "uint256", "internalType": "uint256" }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "tuple",
+          "internalType": "struct DigitalVoting.PollStruct",
+          "components": [
+            { "name": "id", "type": "uint256", "internalType": "uint256" },
+            { "name": "title", "type": "string", "internalType": "string" },
+            { "name": "desc", "type": "string", "internalType": "string" },
+            { "name": "image", "type": "string", "internalType": "string" },
+            {
+              "name": "voteCount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "contestants",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            { "name": "deleted", "type": "bool", "internalType": "bool" },
+            {
+              "name": "startsAt",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            { "name": "endsAt", "type": "uint256", "internalType": "uint256" },
+            { "name": "creator", "type": "address", "internalType": "address" },
+            {
+              "name": "timeForCreatingPoll",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "voters",
+              "type": "address[]",
+              "internalType": "address[]"
+            }
+          ]
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getAllContestants",
+      "inputs": [
+        { "name": "_pollId", "type": "uint256", "internalType": "uint256" }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "tuple[]",
+          "internalType": "struct DigitalVoting.ContestantStruct[]",
+          "components": [
+            { "name": "id", "type": "uint256", "internalType": "uint256" },
+            { "name": "name", "type": "string", "internalType": "string" },
+            { "name": "desc", "type": "string", "internalType": "string" },
+            { "name": "image", "type": "string", "internalType": "string" },
+            { "name": "partyName", "type": "string", "internalType": "string" },
+            { "name": "votes", "type": "uint256", "internalType": "uint256" }
+          ]
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getAllPolls",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "",
+          "type": "tuple[]",
+          "internalType": "struct DigitalVoting.PollStruct[]",
+          "components": [
+            { "name": "id", "type": "uint256", "internalType": "uint256" },
+            { "name": "title", "type": "string", "internalType": "string" },
+            { "name": "desc", "type": "string", "internalType": "string" },
+            { "name": "image", "type": "string", "internalType": "string" },
+            {
+              "name": "voteCount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "contestants",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            { "name": "deleted", "type": "bool", "internalType": "bool" },
+            {
+              "name": "startsAt",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            { "name": "endsAt", "type": "uint256", "internalType": "uint256" },
+            { "name": "creator", "type": "address", "internalType": "address" },
+            {
+              "name": "timeForCreatingPoll",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "voters",
+              "type": "address[]",
+              "internalType": "address[]"
+            }
+          ]
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "pollToContestant",
+      "inputs": [
+        { "name": "", "type": "uint256", "internalType": "uint256" },
+        { "name": "", "type": "uint256", "internalType": "uint256" }
+      ],
+      "outputs": [
+        { "name": "id", "type": "uint256", "internalType": "uint256" },
+        { "name": "name", "type": "string", "internalType": "string" },
+        { "name": "desc", "type": "string", "internalType": "string" },
+        { "name": "image", "type": "string", "internalType": "string" },
+        { "name": "partyName", "type": "string", "internalType": "string" },
+        { "name": "votes", "type": "uint256", "internalType": "uint256" }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "polls",
+      "inputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "outputs": [
+        { "name": "id", "type": "uint256", "internalType": "uint256" },
+        { "name": "title", "type": "string", "internalType": "string" },
+        { "name": "desc", "type": "string", "internalType": "string" },
+        { "name": "image", "type": "string", "internalType": "string" },
+        { "name": "voteCount", "type": "uint256", "internalType": "uint256" },
+        { "name": "contestants", "type": "uint256", "internalType": "uint256" },
+        { "name": "deleted", "type": "bool", "internalType": "bool" },
+        { "name": "startsAt", "type": "uint256", "internalType": "uint256" },
+        { "name": "endsAt", "type": "uint256", "internalType": "uint256" },
+        { "name": "creator", "type": "address", "internalType": "address" },
+        {
+          "name": "timeForCreatingPoll",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "updatePoll",
+      "inputs": [
+        { "name": "_pollId", "type": "uint256", "internalType": "uint256" },
+        { "name": "_title", "type": "string", "internalType": "string" },
+        { "name": "_image", "type": "string", "internalType": "string" },
+        { "name": "_desc", "type": "string", "internalType": "string" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "vote",
+      "inputs": [
+        { "name": "_pollId", "type": "uint256", "internalType": "uint256" },
+        {
+          "name": "_contestantId",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "event",
+      "name": "ContestantAdded",
+      "inputs": [
+        {
+          "name": "pollId",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        },
+        {
+          "name": "contestantId",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "indexed": false,
+          "internalType": "string"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "PollCreated",
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "indexed": false,
+          "internalType": "string"
+        },
+        {
+          "name": "creator",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "PollUpdated",
+      "inputs": [
+        {
+          "name": "pollId",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "Voted",
+      "inputs": [
+        {
+          "name": "pollId",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        },
+        {
+          "name": "contestantId",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        },
+        {
+          "name": "voter",
+          "type": "address",
+          "indexed": false,
+          "internalType": "address"
+        }
+      ],
+      "anonymous": false
+    }
+  ]
