@@ -1,6 +1,6 @@
 <?php
 // Digital Voting System – PHP test for getAPoll()
-// Connects to Lisk and reads poll #1
+// Connects to Lisk and reads poll #1 
 
 $rpcUrl = "https://rpc.sepolia-api.lisk.com";
 $contract = "0x94dd8c3f2Df10b43F7e3f1517A530F43cB8d609c";
